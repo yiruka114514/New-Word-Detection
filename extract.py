@@ -10,6 +10,7 @@ def extract_cadicateword(_doc,_max_word_len):
         for j in range(i+1, min(i+1+_max_word_len,doc_length+1)):
             indexes.append((i,j))
     return sorted(indexes, key = lambda _word:_doc[_word[0]:_word[1]])
+    #word是indexes里的元素（首位下标对），排序依据是doc中首位下标对应的字符串
 
 def gen_bigram(_word_str):
     '''

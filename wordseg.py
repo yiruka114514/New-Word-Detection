@@ -69,6 +69,7 @@ class segdocument(object):
         filter_function = lambda f:len(f.text) > 1 and f.pmi > self.min_pmi and f.freq > self.min_tf\
                                    and min(f.left,f.right) > self.min_entropy
         self.word_tf_pmi_ent = map(lambda w :(w.text,len(w.text),w.freq,w.pmi,min(w.left,w.right)),filter(filter_function,self.word_info))
+        #filter函数会返回一个列表
 
     def gen_words(self,doc):
         #pattern = re.compile('[：“。”，！？、《》……；’‘\n——\r\t）、（——^[1-9]d*$]')
@@ -76,11 +77,14 @@ class segdocument(object):
         pattern = re.compile(u'[\\s\\d,.<>/?:;\'\"[\\]{}()\\|~!@#$%^&*\\-_=+a-zA-Z，。《》、？：；“”‘’｛｝【】（）…￥！—┄－]+')
         doc = pattern.sub(r'',doc)
         word_index = extract_cadicateword(doc,self.max_word_len)
+        #返回下标对，按照字符串排序
         word_cad = {} #后选词的字典
         for suffix in word_index:
-            word = doc[suffix[0]:suffix[1]]
+            #print (suffix)######
+            word = doc[suffix[0]:suffix[1]] ####按照下标取词。 wordsuffix是语词首位在文档的下标
+            #print(word)######
             if word not in word_cad:
-                word_cad[word] = wordinfo(word)
+                word_cad[word] = wordinfo(word) #索引是字符串word，值是wordinfo类的实例
                 # record frequency of word and left neighbors and right neighbors
             word_cad[word].update_data(doc[suffix[0]-1:suffix[0]],doc[suffix[1]:suffix[1]+1])
         length = len(doc)
@@ -103,17 +107,18 @@ if __name__ == '__main__':
         wordlist = []
         word_candidate = []
         dict_bank = []
-        dict_path = path + '\\dict.txt'
+        dict_path = path + '/dict.txt'
 
-        doc = codecs.open(path+'\\train_for_ws.txt', "r", "utf-8").read()
+        doc = codecs.open(path+'/train_for_ws.txt', "r", "utf-8").read()
 
-        word = segdocument(doc,max_word_len=3,min_tf=(1e-08),min_entropy=1.0,min_pmi=3.0)
+        word = segdocument(doc,max_word_len=4,min_tf=(1e-08),min_entropy=1,min_pmi=3.0)
         print('avg_frq:'+ str(word.avg_frq))
         print('avg_pmi:' + str(word.avg_pmi))
         print('avg_entropy:'+ str(word.avg_entropy))
 
         for i in codecs.open(dict_path, 'r', "utf-8"):
             dict_bank.append(i.split(' ')[0])
+
 
         print('result:')
         for i in word.word_tf_pmi_ent:

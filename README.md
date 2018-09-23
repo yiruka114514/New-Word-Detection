@@ -14,7 +14,7 @@ Difference with the original fork: Updated to python 3
 **代码说明：**  
 **Code describing:**  
 - extract.py:  
-    提供文档中所有成词的可能组合，以及计算词的点互信息时的一个组合。  
+    提供文档中所有成词的可能组合，以及计算词的点互信息（PMI）时的一个组合。
     Providing all possible word combines in document, and computing all word combines of PMI.  
  - entropy.py:  
     计算左右邻居熵的大小  
